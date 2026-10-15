@@ -387,8 +387,8 @@
         <label for="f-telefono" style="font-size:13px; font-weight:700;">Tu teléfono (opcional)</label>
         <input id="f-telefono" type="tel" placeholder="+51 9XX XXX XXX" style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line); font-size:15px; font-family:var(--font-body); background:var(--paper); color:var(--ink);">
       </div>
-      <button type="submit" style="margin-top:4px; width:100%; text-decoration:none; font-weight:700; font-size:16px; background:var(--green); color:var(--ink); padding:16px 28px; border-radius:999px; border:none; cursor:pointer; font-family:var(--font-body);">Enviar por correo</button>
-      <p style="margin:0; font-size:12.5px; color:var(--muted); text-align:center;">Se abre tu correo con el mensaje ya armado — lo confirmas y lo envías tú.</p>
+      <button type="submit" style="margin-top:4px; width:100%; text-decoration:none; font-weight:700; font-size:16px; background:var(--green); color:var(--ink); padding:16px 28px; border-radius:999px; border:none; cursor:pointer; font-family:var(--font-body);">Enviar</button>
+      <p id="form-status" style="margin:0; font-size:13px; text-align:center; min-height:18px;"></p>
     </form>
   </div>
 
@@ -405,24 +405,49 @@
 </div>
 
 <script>
-  document.getElementById('contact-form').addEventListener('submit', function (e) {
+  var form = document.getElementById('contact-form');
+  var boton = form.querySelector('button[type="submit"]');
+  var estado = document.getElementById('form-status');
+
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var correo = 'benites.ee@gmail.com';
-    var nombre = document.getElementById('f-nombre').value.trim();
-    var negocio = document.getElementById('f-negocio').value.trim();
-    var necesidad = document.getElementById('f-necesidad').value.trim();
-    var telefono = document.getElementById('f-telefono').value.trim();
 
-    var asunto = 'Auditoría gratuita — ' + (negocio || nombre || 'consulta HNR');
-    var lineas = ['Hola HNR, quiero agendar mi auditoría gratuita.', ''];
-    if (nombre) lineas.push('Nombre: ' + nombre);
-    if (negocio) lineas.push('Negocio: ' + negocio);
-    if (necesidad) lineas.push('Qué quiero automatizar: ' + necesidad);
-    if (telefono) lineas.push('Mi teléfono: ' + telefono);
+    var payload = {
+      nombre: document.getElementById('f-nombre').value.trim(),
+      negocio: document.getElementById('f-negocio').value.trim(),
+      necesidad: document.getElementById('f-necesidad').value.trim(),
+      telefono: document.getElementById('f-telefono').value.trim()
+    };
 
-    var cuerpo = lineas.join('\n');
-    var url = 'mailto:' + correo + '?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
-    window.location.href = url;
+    boton.disabled = true;
+    boton.textContent = 'Enviando...';
+    estado.textContent = '';
+
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          return { ok: res.ok && data.ok, error: data.error };
+        });
+      })
+      .then(function (resultado) {
+        if (!resultado.ok) {
+          throw new Error(resultado.error || 'No se pudo enviar.');
+        }
+        form.reset();
+        boton.textContent = 'Enviado ✓';
+        estado.style.color = 'var(--green-text)';
+        estado.textContent = 'Listo, recibimos tu mensaje — te escribimos pronto.';
+      })
+      .catch(function (err) {
+        boton.disabled = false;
+        boton.textContent = 'Enviar';
+        estado.style.color = 'var(--orange-text)';
+        estado.textContent = (err && err.message) || 'Algo falló. Escríbenos directo a benites.ee@gmail.com.';
+      });
   });
 </script>
 

@@ -22,4 +22,4 @@ npx serve .
 
 ## Deploy
 
-Pensado para Vercel o Cloudflare Pages — sitio 100% estático, sin configuración especial (no hay `vercel.json` ni build command, el root del repo ya es el output).
+Desplegado en Cloudflare: **https://hnr-website.edzon-bf.workers.dev/** — sitio 100% estático, sin configuración especial (no hay `vercel.json` ni build command, el root del repo ya es el output).

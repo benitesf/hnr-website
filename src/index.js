@@ -42,20 +42,12 @@ async function handleContact(request, env) {
     .filter((linea) => linea !== null)
     .join("\n");
 
-  const key = env.RESEND_API_KEY || "";
-  if (!key || key.length < 10) {
-    return jsonResponse(
-      { ok: false, error: "Secret no configurado en el Worker.", keyPresente: !!key, keyLargo: key.length },
-      500
-    );
-  }
-
   let resendResp;
   try {
     resendResp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + key,
+        Authorization: "Bearer " + env.RESEND_API_KEY,
         "content-type": "application/json"
       },
       body: JSON.stringify({
@@ -70,8 +62,7 @@ async function handleContact(request, env) {
   }
 
   if (!resendResp.ok) {
-    const detalle = await resendResp.text();
-    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío.", detalle: detalle }, 502);
+    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío." }, 502);
   }
 
   return jsonResponse({ ok: true });

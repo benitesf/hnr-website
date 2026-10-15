@@ -62,7 +62,8 @@ async function handleContact(request, env) {
   }
 
   if (!resendResp.ok) {
-    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío." }, 502);
+    const detalle = await resendResp.text();
+    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío.", detalle: detalle }, 502);
   }
 
   return jsonResponse({ ok: true });

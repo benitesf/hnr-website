@@ -15,6 +15,9 @@ El diseño se iteró como [Artifact de Claude](https://claude.ai/artifact/5Z6Fvp
 ## Variables de entorno / secrets
 - `RESEND_API_KEY` — configurado como **secret** en el dashboard de Cloudflare (Settings → Variables and Secrets), nunca en el repo.
 
+### Límite de Resend en modo prueba
+Sin un dominio verificado en resend.com/domains, Resend solo deja enviar a la dirección con la que te registraste ahí (hoy, `edsonbenitesf@gmail.com` — por eso `DESTINATARIO` en `src/index.js` apunta a ese correo, no a `benites.ee@gmail.com`). Si se verifica un dominio propio de HNR más adelante, se puede: (1) cambiar `REMITENTE` a una dirección de ese dominio, y (2) mandar los leads a `benites.ee@gmail.com` si se prefiere.
+
 ## Desarrollo local
 
 ```bash

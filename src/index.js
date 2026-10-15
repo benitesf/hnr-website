@@ -1,4 +1,4 @@
-const DESTINATARIO = "benites.ee@gmail.com";
+const DESTINATARIO = "edsonbenitesf@gmail.com";
 const REMITENTE = "HNR Website <onboarding@resend.dev>";
 
 export default {
@@ -62,8 +62,7 @@ async function handleContact(request, env) {
   }
 
   if (!resendResp.ok) {
-    const detalle = await resendResp.text();
-    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío.", detalle: detalle }, 502);
+    return jsonResponse({ ok: false, error: "El servicio de correo rechazó el envío." }, 502);
   }
 
   return jsonResponse({ ok: true });

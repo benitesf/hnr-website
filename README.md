@@ -29,3 +29,9 @@ Para que `/api/contact` funcione en local hace falta un `.dev.vars` con `RESEND_
 ## Deploy
 
 Desplegado en Cloudflare: **https://hnr-website.edzon-bf.workers.dev/** — Git-conectado, cada push a `main` redespliega automático.
+
+## Métricas
+
+- **Tráfico (visitas, referrers, países, Core Web Vitals):** Cloudflare Web Analytics — pendiente de activar (Dashboard → Analytics & Logs → Web Analytics → Add a site → pegar el snippet en el `<head>` de `public/index.html`, ya que el dominio es `workers.dev` y no activa automático por "zona").
+- **Leads reales (cuántos completaron el formulario):** ya se trackean solos — cada envío exitoso queda registrado en el dashboard de Resend (resend.com → Emails), no hace falta nada adicional.
+- **Google Analytics (GA4):** **anotado para más adelante, no implementar todavía.** Solo tiene sentido sumarlo cuando haya campañas/contenido activo y se necesite trackear de qué canal viene cada visita (UTMs) o armar funnels más finos — para el tamaño actual del sitio es complejidad de más (D002).
